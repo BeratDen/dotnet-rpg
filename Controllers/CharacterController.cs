@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace dotnet_rpg.Controllers
 {
     [ApiController]
-    [Route("api/characters")]
+    [Route("characters")]
     public class CharacterController : ControllerBase
     {
         private readonly ICharacterService _characterService;
@@ -38,7 +38,7 @@ namespace dotnet_rpg.Controllers
             return Ok(await _characterService.CreateCharacter(character));
         }
 
-        [HttpPut()]
+        [HttpPut]
         public async Task<ActionResult<ServiceResponse<GetCharacterDto>>> Update(UpdateCharacterDto updateCharacter)
         {
             var response = await _characterService.UpdateChracter(updateCharacter);
@@ -46,6 +46,18 @@ namespace dotnet_rpg.Controllers
             {
                 return Ok(response);
             }
+            return NotFound(response);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<ServiceResponse<List<GetCharacterDto>>>> Destroy(int id)
+        {
+            var response = await _characterService.DeleteCharacter(id);
+            if (response.Data is not null)
+            {
+                return Ok(response);
+            }
+
             return NotFound(response);
         }
 
