@@ -1,14 +1,17 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using dotnet_rpg.Dtos.Character;
 using dotnet_rpg.Models;
 using dotnet_rpg.Services.CharacterService;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace dotnet_rpg.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("characters")]
     public class CharacterController : ControllerBase
@@ -33,12 +36,14 @@ namespace dotnet_rpg.Controllers
         }
 
         [HttpPost]
+        [Route("create")]
         public async Task<ActionResult<ServiceResponse<List<GetCharacterDto>>>> Store(AddChracterDto character)
         {
             return Ok(await _characterService.CreateCharacter(character));
         }
 
         [HttpPut]
+        [Route("update")]
         public async Task<ActionResult<ServiceResponse<GetCharacterDto>>> Update(UpdateCharacterDto updateCharacter)
         {
             var response = await _characterService.UpdateChracter(updateCharacter);
@@ -49,7 +54,7 @@ namespace dotnet_rpg.Controllers
             return NotFound(response);
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("delete/{id}")]
         public async Task<ActionResult<ServiceResponse<List<GetCharacterDto>>>> Destroy(int id)
         {
             var response = await _characterService.DeleteCharacter(id);
